@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { createRoot } from 'react-dom/client';
 import {
   Bell, BookOpen, BrainCircuit, CalendarDays, Camera, ChartNoAxesColumnIncreasing,
@@ -194,7 +194,7 @@ const memberFeatureGroups = [
   ]}
 ];
 
-function ApuMemberWorld({ onAction }) {
+function ApuMemberWorld({ onAction, onShowTodayPlan, planActive }) {
   const [outfit, setOutfit] = useState('scholar');
   const [points, setPoints] = useState(2680);
   const [likes, setLikes] = useState(128);
@@ -207,6 +207,13 @@ function ApuMemberWorld({ onAction }) {
     setReward(true);
     window.setTimeout(() => setReward(false), 900);
     onAction(`${title}·完成可得 20 成长值`);
+  };
+  const openFeature = (title) => {
+    if (title === '同步畅学') {
+      onShowTodayPlan();
+      return;
+    }
+    chooseFeature(title);
   };
   const cheer = () => {
     if (!liked) setLikes(value => value + 1);
@@ -240,7 +247,7 @@ function ApuMemberWorld({ onAction }) {
       <div className="feature-intro"><b>阿朴会员学习中心</b><small>专属功能已全部开通</small></div>
       {memberFeatureGroups.map(group => <div className="feature-group" key={group.title}>
         <h3>{group.title}</h3>
-        <div>{group.items.map(item => <button className={item.wide ? 'wide' : ''} key={item.title} onClick={() => chooseFeature(item.title)}><span>{item.mark}</span><b>{item.title}</b><ChevronRight size={11}/></button>)}</div>
+        <div>{group.items.map(item => <button className={`${item.wide ? 'wide' : ''} ${item.title === '同步畅学' && planActive ? 'plan-active' : ''}`.trim()} key={item.title} onClick={() => openFeature(item.title)} aria-pressed={item.title === '同步畅学' ? planActive : undefined}><span>{item.mark}</span><b>{item.title}</b><ChevronRight size={11}/></button>)}</div>
       </div>)}
     </div>
   </section>;
@@ -279,11 +286,11 @@ const memberTasks = [
   { type: '改', title: '昨日错题及时清', sub: '数学 2题 · 物理 1题', time: '10分钟', status: 'go', icon: RotateCcw, color: 'purple' }
 ];
 
-function TaskList({ mode, onTask }) {
+function TaskList({ mode, onTask, sectionRef, highlighted = false }) {
   const tasks = mode === 'visitor' ? visitorTasks : mode === 'registered' ? memberTasks.slice(0, 2) : mode === 'claimed' ? memberTasks.slice(0, 3) : memberTasks;
   const done = mode === 'visitor' || mode === 'registered' ? 0 : mode === 'claimed' ? 1 : 2;
   return (
-    <section className="section-block tasks-section">
+    <section ref={sectionRef} className={`section-block tasks-section ${highlighted ? 'plan-revealed' : ''}`}>
       <div className="section-heading">
         <div><span className="section-kicker">TODAY</span><h2>{mode === 'visitor' ? '一次完整体验' : mode === 'registered' ? '注册专享试学' : '今日学习计划'}</h2></div>
         <div className="progress-label"><b>{done}</b> / {tasks.length} 已完成</div>
@@ -340,14 +347,26 @@ function ParentCard({ mode, onAction }) {
 }
 
 function HomePage({ mode, setMode, onTask, onAction, setPage }) {
+  const todayPlanRef = useRef(null);
+  const revealTimerRef = useRef(null);
+  const [planActive, setPlanActive] = useState(false);
+  const showTodayPlan = () => {
+    window.clearTimeout(revealTimerRef.current);
+    setPlanActive(true);
+    window.requestAnimationFrame(() => {
+      todayPlanRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+    revealTimerRef.current = window.setTimeout(() => setPlanActive(false), 1800);
+  };
+  useEffect(() => () => window.clearTimeout(revealTimerRef.current), []);
   return <>
     <Hero mode={mode} onStart={() => setPage('study')} />
     <MembershipStatus mode={mode} setMode={setMode} onAction={onAction}/>
     <LifecyclePath mode={mode}/>
     <StageAccessCard mode={mode}/>
-    {mode === 'apu' && <ApuMemberWorld onAction={onAction}/>}
+    {mode === 'apu' && <ApuMemberWorld onAction={onAction} onShowTodayPlan={showTodayPlan} planActive={planActive}/>}
     <JourneyStrip onJump={(c) => onAction(`${c.name}·${c.role}`)} />
-    <TaskList mode={mode} onTask={onTask} />
+    <TaskList mode={mode} onTask={onTask} sectionRef={todayPlanRef} highlighted={planActive} />
     {(mode === 'claimed' || mode === 'apu') && <WeeklyPulse mode={mode} />}
     {mode === 'apu' && <ExamZone onAction={onAction} />}
     <ParentCard mode={mode} onAction={onAction} />

@@ -84,6 +84,14 @@ button:focus-visible{outline:3px solid rgba(22,139,128,.2);outline-offset:2px}
 @media(max-width:420px){.apu-world{margin-left:10px;margin-right:10px;padding:10px;grid-template-columns:132px minmax(0,1fr);gap:7px}.member-mascot{height:190px}.member-mascot img{width:136px;height:195px}.feature-group button{grid-template-columns:23px 1fr 7px;padding-left:4px;padding-right:3px}.feature-group button b{font-size:7.5px}}
 @media(max-width:360px){.apu-world{grid-template-columns:118px minmax(0,1fr);padding:8px}.member-mascot{height:174px}.member-mascot img{width:122px;height:180px}.growth-stats>span,.growth-stats>button{grid-template-columns:12px 1fr;padding:4px}.feature-group button{height:41px}.feature-group button>span{width:21px;height:21px}.feature-group button b{font-size:7px}}
 
+/* Inline reveal for the paid-member daily study plan */
+.feature-group button.plan-active{border-color:#8871d4;background:#f0ecff;box-shadow:0 0 0 2px rgba(119,93,200,.12)}
+.tasks-section{scroll-margin-top:86px}
+.tasks-section .task-list{transition:box-shadow .28s ease,transform .28s ease}
+.tasks-section.plan-revealed .task-list{box-shadow:0 0 0 3px rgba(22,139,128,.14),0 14px 32px rgba(22,139,128,.13);animation:planReveal .72s ease}
+.tasks-section.plan-revealed .section-heading h2{color:var(--teal)}
+@keyframes planReveal{0%{transform:translateY(8px);opacity:.72}100%{transform:none;opacity:1}}
+
 /* Four-stage user lifecycle and content visibility */
 .mode-chip.registered{background:#eaf3ff;color:#3376c8}.mode-chip.claimed{background:#fff0e9;color:#d75d2d}
 .menu-icon.registered{background:#eaf3ff;color:#3376c8}.menu-icon.claimed{background:#fff0e9;color:var(--orange)}
