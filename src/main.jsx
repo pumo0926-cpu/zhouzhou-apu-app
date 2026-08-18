@@ -6,7 +6,7 @@ import {
   FileCheck2, FileText, Flame, GraduationCap, House, Lightbulb, LockKeyhole,
   Medal, Menu, MessageCircleQuestion, NotebookPen, PenLine, Play, RotateCcw,
   ScanLine, Search, Settings, Sparkles, Star, Target, Trophy, UserRound,
-  UsersRound, WandSparkles, X, Zap
+  UsersRound, WandSparkles, X, Zap, ThumbsUp, Shirt, Crown
 } from 'lucide-react';
 import './styles.css';
 
@@ -14,6 +14,12 @@ const mascotAssets = {
   left: `${import.meta.env.BASE_URL}assets/dong-gaofen.webp`,
   center: `${import.meta.env.BASE_URL}assets/qin-lianxi.webp`,
   right: `${import.meta.env.BASE_URL}assets/ai-gaicuo.webp`
+};
+
+const memberOutfits = {
+  daily: { label: '日常装', src: `${import.meta.env.BASE_URL}assets/qin-lianxi.webp` },
+  scholar: { label: '学霸装', src: `${import.meta.env.BASE_URL}assets/qin-scholar.webp` },
+  champion: { label: '冠军装', src: `${import.meta.env.BASE_URL}assets/qin-champion.webp` }
 };
 
 const modes = {
@@ -128,6 +134,75 @@ function MembershipStatus({ mode, setMode, onAction }) {
   </section>;
 }
 
+const memberFeatureGroups = [
+  { title: '同步学', items: [
+    { mark: '★', title: '同步畅学', wide: true }, { mark: '笔', title: '笔记复习' },
+    { mark: '改', title: '错题复刷' }, { mark: '日', title: '真题天天练' }, { mark: '答', title: '主观题带练' }
+  ]},
+  { title: '节点突破练', items: [
+    { mark: '月', title: '月考学练' }, { mark: '中', title: '期中学练' },
+    { mark: '末', title: '期末学练' }, { mark: '播', title: '直播解读' }, { mark: '卷', title: '真题模拟卷', wide: true }
+  ]},
+  { title: '专属服务', items: [
+    { mark: '计', title: '假期学习规划' }, { mark: '拍', title: '试卷拍照解读' }
+  ]},
+  { title: '家长必修', items: [
+    { mark: '心', title: '青少年心理' }, { mark: '家', title: '亲子家长课堂' }
+  ]}
+];
+
+function ApuMemberWorld({ onAction }) {
+  const [outfit, setOutfit] = useState('scholar');
+  const [points, setPoints] = useState(2680);
+  const [likes, setLikes] = useState(128);
+  const [liked, setLiked] = useState(false);
+  const [reward, setReward] = useState(false);
+  const level = Math.floor(points / 500) + 1;
+  const levelProgress = points % 500 / 5;
+  const chooseFeature = (title) => {
+    setPoints(value => value + 20);
+    setReward(true);
+    window.setTimeout(() => setReward(false), 900);
+    onAction(`${title}·完成可得 20 成长值`);
+  };
+  const cheer = () => {
+    if (!liked) setLikes(value => value + 1);
+    setLiked(true);
+  };
+  return <section className="apu-world">
+    <div className="world-title">
+      <span><Sparkles size={13}/>阿朴成长空间</span>
+      <b>Lv.{level} 学习领航员</b>
+    </div>
+    <aside className="growth-rail">
+      <div className="level-chip"><Crown size={13}/> LEVEL {level}</div>
+      <div className="member-mascot">
+        <img key={outfit} src={memberOutfits[outfit].src} alt={`秦练习${memberOutfits[outfit].label}`} />
+        {reward && <i>+20</i>}
+      </div>
+      <div className="growth-stats">
+        <span><Zap size={12}/><b>{points}</b><small>成长值</small></span>
+        <button className={liked ? 'liked' : ''} onClick={cheer}><ThumbsUp size={12}/><b>{likes}</b><small>点赞</small></button>
+      </div>
+      <div className="level-progress"><span><i style={{width:`${levelProgress}%`}}/></span><small>距 Lv.{level + 1} 还差 {500 - points % 500}</small></div>
+      <div className="wardrobe-title"><Shirt size={12}/>我的衣橱</div>
+      <div className="wardrobe">
+        {Object.entries(memberOutfits).map(([key, item], index) => <button key={key} className={outfit === key ? 'active' : ''} onClick={() => setOutfit(key)}>
+          <span><img src={item.src} alt="" />{index === 2 && <Crown size={9}/>}</span><small>{item.label}</small>
+        </button>)}
+      </div>
+      <p><Star size={11}/>完成学习任务获得成长值，解锁更多装扮</p>
+    </aside>
+    <div className="member-features">
+      <div className="feature-intro"><b>阿朴会员学习中心</b><small>专属功能已全部开通</small></div>
+      {memberFeatureGroups.map(group => <div className="feature-group" key={group.title}>
+        <h3>{group.title}</h3>
+        <div>{group.items.map(item => <button className={item.wide ? 'wide' : ''} key={item.title} onClick={() => chooseFeature(item.title)}><span>{item.mark}</span><b>{item.title}</b><ChevronRight size={11}/></button>)}</div>
+      </div>)}
+    </div>
+  </section>;
+}
+
 function JourneyStrip({ onJump }) {
   return (
     <section className="journey-strip">
@@ -225,6 +300,7 @@ function HomePage({ mode, setMode, onTask, onAction, setPage }) {
   return <>
     <Hero mode={mode} onStart={() => setPage('study')} />
     <MembershipStatus mode={mode} setMode={setMode} onAction={onAction}/>
+    {mode === 'apu' && <ApuMemberWorld onAction={onAction}/>}
     <JourneyStrip onJump={(c) => onAction(`${c.name}·${c.role}`)} />
     <TaskList mode={mode} onTask={onTask} />
     {mode !== 'visitor' && <WeeklyPulse mode={mode} />}
