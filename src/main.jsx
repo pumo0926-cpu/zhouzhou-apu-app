@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useRef, useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { createRoot } from 'react-dom/client';
 import {
   Bell, BookOpen, BrainCircuit, CalendarDays, Camera, ChartNoAxesColumnIncreasing,
@@ -194,12 +194,13 @@ const memberFeatureGroups = [
   ]}
 ];
 
-function ApuMemberWorld({ onAction, onShowTodayPlan, planActive }) {
+function ApuMemberWorld({ onAction }) {
   const [outfit, setOutfit] = useState('scholar');
   const [points, setPoints] = useState(2680);
   const [likes, setLikes] = useState(128);
   const [liked, setLiked] = useState(false);
   const [reward, setReward] = useState(false);
+  const [planOpen, setPlanOpen] = useState(false);
   const level = Math.floor(points / 500) + 1;
   const levelProgress = points % 500 / 5;
   const chooseFeature = (title) => {
@@ -210,7 +211,7 @@ function ApuMemberWorld({ onAction, onShowTodayPlan, planActive }) {
   };
   const openFeature = (title) => {
     if (title === '同步畅学') {
-      onShowTodayPlan();
+      setPlanOpen(value => !value);
       return;
     }
     chooseFeature(title);
@@ -247,7 +248,18 @@ function ApuMemberWorld({ onAction, onShowTodayPlan, planActive }) {
       <div className="feature-intro"><b>阿朴会员学习中心</b><small>专属功能已全部开通</small></div>
       {memberFeatureGroups.map(group => <div className="feature-group" key={group.title}>
         <h3>{group.title}</h3>
-        <div>{group.items.map(item => <button className={`${item.wide ? 'wide' : ''} ${item.title === '同步畅学' && planActive ? 'plan-active' : ''}`.trim()} key={item.title} onClick={() => openFeature(item.title)} aria-pressed={item.title === '同步畅学' ? planActive : undefined}><span>{item.mark}</span><b>{item.title}</b><ChevronRight size={11}/></button>)}</div>
+        <div>{group.items.map(item => <React.Fragment key={item.title}>
+          <button className={`${item.wide ? 'wide' : ''} ${item.title === '同步畅学' && planOpen ? 'plan-active' : ''}`.trim()} onClick={() => openFeature(item.title)} aria-expanded={item.title === '同步畅学' ? planOpen : undefined}><span>{item.mark}</span><b>{item.title}</b><ChevronRight size={11}/></button>
+          {item.title === '同步畅学' && planOpen && <div className="inline-today-plan">
+            <div className="inline-plan-head"><span><small>TODAY</small><b>今日学习计划</b></span><em><strong>2</strong> / 4 已完成</em></div>
+            <div className="inline-plan-progress"><i /></div>
+            <div className="inline-plan-list">{memberTasks.map((task, index) => <div className="inline-plan-task" key={task.title}>
+              <span className={`inline-task-mark ${task.color}`}>{task.type}</span>
+              <span><b>{task.title}</b><small>{task.sub}</small></span>
+              {index < 2 ? <i className="inline-task-done"><Check size={10}/></i> : <em>{task.time}</em>}
+            </div>)}</div>
+          </div>}
+        </React.Fragment>)}</div>
       </div>)}
     </div>
   </section>;
@@ -286,11 +298,11 @@ const memberTasks = [
   { type: '改', title: '昨日错题及时清', sub: '数学 2题 · 物理 1题', time: '10分钟', status: 'go', icon: RotateCcw, color: 'purple' }
 ];
 
-function TaskList({ mode, onTask, sectionRef, highlighted = false }) {
+function TaskList({ mode, onTask }) {
   const tasks = mode === 'visitor' ? visitorTasks : mode === 'registered' ? memberTasks.slice(0, 2) : mode === 'claimed' ? memberTasks.slice(0, 3) : memberTasks;
   const done = mode === 'visitor' || mode === 'registered' ? 0 : mode === 'claimed' ? 1 : 2;
   return (
-    <section ref={sectionRef} className={`section-block tasks-section ${highlighted ? 'plan-revealed' : ''}`}>
+    <section className="section-block tasks-section">
       <div className="section-heading">
         <div><span className="section-kicker">TODAY</span><h2>{mode === 'visitor' ? '一次完整体验' : mode === 'registered' ? '注册专享试学' : '今日学习计划'}</h2></div>
         <div className="progress-label"><b>{done}</b> / {tasks.length} 已完成</div>
@@ -347,26 +359,14 @@ function ParentCard({ mode, onAction }) {
 }
 
 function HomePage({ mode, setMode, onTask, onAction, setPage }) {
-  const todayPlanRef = useRef(null);
-  const revealTimerRef = useRef(null);
-  const [planActive, setPlanActive] = useState(false);
-  const showTodayPlan = () => {
-    window.clearTimeout(revealTimerRef.current);
-    setPlanActive(true);
-    window.requestAnimationFrame(() => {
-      todayPlanRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    });
-    revealTimerRef.current = window.setTimeout(() => setPlanActive(false), 1800);
-  };
-  useEffect(() => () => window.clearTimeout(revealTimerRef.current), []);
   return <>
     <Hero mode={mode} onStart={() => setPage('study')} />
     <MembershipStatus mode={mode} setMode={setMode} onAction={onAction}/>
     <LifecyclePath mode={mode}/>
     <StageAccessCard mode={mode}/>
-    {mode === 'apu' && <ApuMemberWorld onAction={onAction} onShowTodayPlan={showTodayPlan} planActive={planActive}/>}
+    {mode === 'apu' && <ApuMemberWorld onAction={onAction}/>}
     <JourneyStrip onJump={(c) => onAction(`${c.name}·${c.role}`)} />
-    <TaskList mode={mode} onTask={onTask} sectionRef={todayPlanRef} highlighted={planActive} />
+    {mode !== 'apu' && <TaskList mode={mode} onTask={onTask} />}
     {(mode === 'claimed' || mode === 'apu') && <WeeklyPulse mode={mode} />}
     {mode === 'apu' && <ExamZone onAction={onAction} />}
     <ParentCard mode={mode} onAction={onAction} />
