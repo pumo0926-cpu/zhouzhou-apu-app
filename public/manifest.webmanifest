@@ -1,0 +1,11 @@
+{
+  "name": "周周阿朴 · 初中学练改",
+  "short_name": "周周阿朴",
+  "description": "初中生智能学、练、改学习平台",
+  "start_url": "/zhouzhou-apu-app/",
+  "scope": "/zhouzhou-apu-app/",
+  "display": "standalone",
+  "background_color": "#f8f9f5",
+  "theme_color": "#168b80",
+  "orientation": "portrait-primary"
+}

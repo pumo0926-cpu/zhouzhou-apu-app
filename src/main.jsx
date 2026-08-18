@@ -10,6 +10,8 @@ import {
 } from 'lucide-react';
 import './styles.css';
 
+const mascotsUrl = `${import.meta.env.BASE_URL}assets/apu-mascots.webp`;
+
 const modes = {
   visitor: { label: '游客体验', short: '游客', chip: '免费体验', color: '#168b80' },
   camp: { label: '7天训练营', short: '训练营', chip: 'DAY 3', color: '#f07342' },
@@ -55,7 +57,7 @@ const navItems = [
 ];
 
 function Avatar({ pos = 'left', size = 'md' }) {
-  return <div className={`avatar avatar-${pos} avatar-${size}`} role="img" aria-label="周周阿朴IP角色" />;
+  return <div className={`avatar avatar-${pos} avatar-${size}`} style={{ backgroundImage: `url(${mascotsUrl})` }} role="img" aria-label="周周阿朴IP角色" />;
 }
 
 function Header({ mode, setMode, openMode, setOpenMode, onBell }) {
@@ -101,7 +103,7 @@ function Hero({ mode, onStart }) {
         <small className="hero-meta">{copy.meta}</small>
       </div>
       <div className="hero-art">
-        <img src="/assets/apu-mascots.webp" alt="董高分、秦练习和艾改错" />
+        <img src={mascotsUrl} alt="董高分、秦练习和艾改错" />
         <span className="art-bubble bubble-a">学会方法</span>
         <span className="art-bubble bubble-b">解决问题</span>
       </div>
