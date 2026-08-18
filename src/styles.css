@@ -43,3 +43,13 @@ button:focus-visible{outline:3px solid rgba(22,139,128,.2);outline-offset:2px}
 .avatar-right{background-position:center;background-color:#e5f5fa}
 @media(max-width:420px){.hero-art{right:-32px;width:270px}}
 @media(max-width:360px){.hero-art{right:-50px;transform:scale(.92);transform-origin:right bottom}}
+
+/* Three-item primary navigation: UP / Start / Mine */
+.bottom-nav{height:calc(76px + env(safe-area-inset-bottom));padding:8px 24px calc(8px + env(safe-area-inset-bottom));justify-content:space-between;overflow:visible}
+.bottom-nav button{width:auto;max-width:120px;flex:1;min-height:52px;gap:4px}
+.bottom-nav button>span{height:30px;min-width:42px}
+.bottom-nav small{font-size:10px;letter-spacing:.2px}
+.bottom-nav .primary-tab{transform:translateY(-14px);color:var(--ink)}
+.bottom-nav .primary-tab>span,.bottom-nav .primary-tab.active>span{width:54px;height:54px;border-radius:19px;background:linear-gradient(145deg,#15978b,#08746c);color:#fff;box-shadow:0 10px 23px rgba(22,139,128,.31),0 0 0 5px rgba(255,255,255,.96)}
+.bottom-nav .primary-tab small{font-weight:800;color:var(--ink)}
+.bottom-nav .primary-tab.active small{color:var(--teal)}

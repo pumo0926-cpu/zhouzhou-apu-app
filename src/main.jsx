@@ -53,10 +53,8 @@ const characters = [
 ];
 
 const navItems = [
-  { id: 'home', label: '首页', icon: House },
-  { id: 'study', label: '同步学', icon: BookOpen },
-  { id: 'review', label: '复习本', icon: NotebookPen },
-  { id: 'exam', label: '备考', icon: Target },
+  { id: 'home', label: 'UP页', icon: House },
+  { id: 'study', label: '开启学', icon: Play, primary: true },
   { id: 'profile', label: '我的', icon: CircleUserRound }
 ];
 
@@ -295,7 +293,7 @@ function ProfilePage({ mode, setMode, onAction }) {
 function PageTitle({ eyebrow, title, desc }) { return <div className="page-title"><span>{eyebrow}</span><h1>{title}</h1><p>{desc}</p></div>; }
 
 function BottomNav({ page, setPage }) {
-  return <nav className="bottom-nav">{navItems.map(item=><button key={item.id} className={page===item.id?'active':''} onClick={()=>{setPage(item.id);window.scrollTo({top:0,behavior:'smooth'})}}><span><item.icon size={21}/>{item.id==='review'&&<i/>}</span><small>{item.label}</small></button>)}</nav>;
+  return <nav className="bottom-nav" aria-label="主导航">{navItems.map(item=><button key={item.id} aria-current={page===item.id?'page':undefined} className={`${page===item.id?'active':''} ${item.primary?'primary-tab':''}`} onClick={()=>{setPage(item.id);window.scrollTo({top:0,behavior:'smooth'})}}><span><item.icon size={item.primary?24:21}/></span><small>{item.label}</small></button>)}</nav>;
 }
 
 function ActionSheet({ data, close, mode, upgrade }) {
