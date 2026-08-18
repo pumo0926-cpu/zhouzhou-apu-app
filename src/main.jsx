@@ -182,7 +182,7 @@ const memberFeatureGroups = [
     { mark: '★', title: '同步畅学', wide: true }, { mark: '笔', title: '笔记复习' },
     { mark: '改', title: '错题复刷' }, { mark: '日', title: '真题天天练' }, { mark: '答', title: '主观题带练' }
   ]},
-  { title: '节点突破练', items: [
+  { title: '学习节点专区', items: [
     { mark: '月', title: '月考学练' }, { mark: '中', title: '期中学练' },
     { mark: '末', title: '期末学练' }, { mark: '播', title: '直播解读' }, { mark: '卷', title: '真题模拟卷', wide: true }
   ]},
