@@ -53,3 +53,20 @@ button:focus-visible{outline:3px solid rgba(22,139,128,.2);outline-offset:2px}
 .bottom-nav .primary-tab>span,.bottom-nav .primary-tab.active>span{width:54px;height:54px;border-radius:19px;background:linear-gradient(145deg,#15978b,#08746c);color:#fff;box-shadow:0 10px 23px rgba(22,139,128,.31),0 0 0 5px rgba(255,255,255,.96)}
 .bottom-nav .primary-tab small{font-weight:800;color:var(--ink)}
 .bottom-nav .primary-tab.active small{color:var(--teal)}
+
+/* Registration and paid-course membership states */
+.mode-chip.junior{background:#fff0e9;color:#d75d2d}.mode-chip.apu{background:#f0ebff;color:#684aba}
+.menu-icon.junior{background:#fff0e9;color:var(--orange)}.menu-icon.apu{background:#f0ebff;color:var(--purple)}
+.hero-junior{background:linear-gradient(145deg,#dd5b31,#f5854f 62%,#eea14e)}
+.hero-apu{background:linear-gradient(145deg,#3f327d,#6b53ba 57%,#8e6bd0)}
+.hero-junior .primary-button{color:#d75b30}.hero-apu .primary-button{color:#5c469f}
+.hero-junior .hero-art:after{--fade:#ef7444}.hero-apu .hero-art:after{--fade:#5e49a6}
+.profile-head.junior{background:linear-gradient(145deg,#d65b35,#ed8550)}
+.profile-head.apu{background:linear-gradient(145deg,#493883,#755cc1)}
+.membership-status{margin:10px 14px 0;padding:11px 12px;border:1px solid var(--line);border-radius:16px;background:#fff;display:flex;align-items:center;gap:9px;box-shadow:0 5px 16px rgba(45,66,61,.04)}
+.membership-icon{width:34px;height:34px;border-radius:11px;background:#e6f5f1;color:var(--teal);display:grid;place-items:center;flex-shrink:0}
+.membership-status>div{display:flex;flex:1;min-width:0;flex-direction:column}.membership-status b{font-size:11px}.membership-status small{font-size:8px;color:#8a9491;margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.membership-status button{height:30px;padding:0 7px;border-radius:9px;background:#e7f5f2;color:var(--teal);display:flex;align-items:center;white-space:nowrap;font-size:8px;font-weight:800}
+.membership-status.junior .membership-icon{background:#fff0e9;color:var(--orange)}.membership-status.junior button{background:#fff0e9;color:#d65b35}
+.membership-status.apu .membership-icon{background:#f0ebff;color:var(--purple)}.membership-status.apu button{background:#f0ebff;color:#684aba}
+@media(max-width:420px){.membership-status{margin-left:10px;margin-right:10px}}

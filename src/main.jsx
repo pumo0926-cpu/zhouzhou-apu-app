@@ -17,9 +17,9 @@ const mascotAssets = {
 };
 
 const modes = {
-  visitor: { label: '游客体验', short: '游客', chip: '免费体验', color: '#168b80' },
-  camp: { label: '7天训练营', short: '训练营', chip: 'DAY 3', color: '#f07342' },
-  vip: { label: '年课 VIP', short: 'VIP', chip: 'VIP', color: '#7359c8' }
+  visitor: { label: '游客', short: '游客', chip: '未注册', color: '#168b80' },
+  junior: { label: '初级会员', short: '初级会员', chip: '已领课', color: '#f07342' },
+  apu: { label: '阿朴会员', short: '阿朴会员', chip: '正价课', color: '#7359c8' }
 };
 
 const modeCopy = {
@@ -30,15 +30,15 @@ const modeCopy = {
     button: '开始免费体验',
     meta: '· 无需注册 · 约12分钟'
   },
-  camp: {
-    eyebrow: '7天提分训练营 · DAY 3',
-    title: '连续学习第 3 天\n比昨天更进一步',
-    desc: '今天完成 3 个任务，解锁专属学情报告',
-    button: '继续今日训练',
-    meta: '今日已学 18 分钟 · 还剩 2 项'
+  junior: {
+    eyebrow: '初级会员 · 已领取体验课',
+    title: '连续学习第 3 天\n把方法真正用起来',
+    desc: '完成学练改任务，生成你的首份学情小结',
+    button: '继续已领课程',
+    meta: '体验权益还剩 5 天 · 今日已学 18 分钟'
   },
-  vip: {
-    eyebrow: '八年级 · 秋季第 4 周',
+  apu: {
+    eyebrow: '阿朴会员 · 八年级秋季第 4 周',
     title: '上午好，林小满\n今天按节奏稳稳学',
     desc: '为你智能安排 5 项任务，预计 45 分钟完成',
     button: '开始今日学习',
@@ -79,8 +79,8 @@ function Header({ mode, setMode, openMode, setOpenMode, onBell }) {
               <div className="menu-title">切换体验身份</div>
               {Object.entries(modes).map(([key, item]) => (
                 <button key={key} className={mode === key ? 'active' : ''} onClick={() => { setMode(key); setOpenMode(false); }}>
-                  <span className={`menu-icon ${key}`}>{key === 'visitor' ? <UserRound /> : key === 'camp' ? <Flame /> : <Trophy />}</span>
-                  <span><b>{item.label}</b><small>{key === 'visitor' ? '基础功能体验' : key === 'camp' ? '产品深度体验' : '完整个性化服务'}</small></span>
+                  <span className={`menu-icon ${key}`}>{key === 'visitor' ? <UserRound /> : key === 'junior' ? <Medal /> : <Trophy />}</span>
+                  <span><b>{item.label}</b><small>{key === 'visitor' ? '未注册·基础体验' : key === 'junior' ? '已注册·已领课' : '已购买·正价课服务'}</small></span>
                   {mode === key && <Check size={17} />}
                 </button>
               ))}
@@ -115,6 +115,19 @@ function Hero({ mode, onStart }) {
   );
 }
 
+function MembershipStatus({ mode, setMode, onAction }) {
+  const state = mode === 'visitor'
+    ? { icon: UserRound, label: '当前为游客', detail: '注册即可免费领取体验课', action: '注册领课', next: 'junior' }
+    : mode === 'junior'
+      ? { icon: Medal, label: '初级会员·体验课生效中', detail: '还剩 5 天，升级后解锁全学期规划', action: '升级阿朴会员', next: 'apu' }
+      : { icon: Trophy, label: '阿朴会员·正价课服务中', detail: '专属学习方案已更新，有效期至 2027.08', action: '查看权益', next: null };
+  return <section className={`membership-status ${mode}`}>
+    <span className="membership-icon"><state.icon size={19}/></span>
+    <div><b>{state.label}</b><small>{state.detail}</small></div>
+    <button onClick={() => state.next ? setMode(state.next) : onAction('阿朴会员权益')}>{state.action}<ChevronRight size={13}/></button>
+  </section>;
+}
+
 function JourneyStrip({ onJump }) {
   return (
     <section className="journey-strip">
@@ -141,7 +154,7 @@ const visitorTasks = [
   { type: '改', title: '看懂错因，举一反三', sub: '艾改错 · 个性化讲解', time: '1题', status: 'lock', icon: RotateCcw, color: 'purple' }
 ];
 
-const vipTasks = [
+const memberTasks = [
   { type: '学', title: '一次函数：待定系数法', sub: '数学 · 同步新课', time: '12分钟', status: 'go', icon: Play, color: 'teal' },
   { type: '练', title: '函数图像分层练习', sub: '数学 · 8道精选题', time: '15分钟', status: 'go', icon: PenLine, color: 'orange' },
   { type: '背', title: 'Unit 3 核心词组', sub: '英语 · 20个待复习', time: '8分钟', status: 'go', icon: BrainCircuit, color: 'blue' },
@@ -149,8 +162,8 @@ const vipTasks = [
 ];
 
 function TaskList({ mode, onTask }) {
-  const tasks = mode === 'visitor' ? visitorTasks : mode === 'camp' ? vipTasks.slice(0, 3) : vipTasks;
-  const done = mode === 'visitor' ? 0 : mode === 'camp' ? 1 : 2;
+  const tasks = mode === 'visitor' ? visitorTasks : mode === 'junior' ? memberTasks.slice(0, 3) : memberTasks;
+  const done = mode === 'visitor' ? 0 : mode === 'junior' ? 1 : 2;
   return (
     <section className="section-block tasks-section">
       <div className="section-heading">
@@ -202,15 +215,16 @@ function ParentCard({ mode, onAction }) {
   return (
     <section className="parent-card">
       <div className="parent-icon"><UsersRound size={24} /></div>
-      <div><span>家长端</span><b>{mode === 'vip' ? '本周学习报告已更新' : '了解孩子真实学习情况'}</b><small>{mode === 'vip' ? '学习 4.2h · 掌握度提升 12%' : '不是只看分数，更要看方法和习惯'}</small></div>
-      <button onClick={() => onAction('家长学习报告')}>{mode === 'vip' ? '查看报告' : '查看示例'}<ChevronRight size={15} /></button>
+      <div><span>家长端</span><b>{mode === 'apu' ? '本周学习报告已更新' : '了解孩子真实学习情况'}</b><small>{mode === 'apu' ? '学习 4.2h · 掌握度提升 12%' : '不是只看分数，更要看方法和习惯'}</small></div>
+      <button onClick={() => onAction('家长学习报告')}>{mode === 'apu' ? '查看报告' : '查看示例'}<ChevronRight size={15} /></button>
     </section>
   );
 }
 
-function HomePage({ mode, onTask, onAction, setPage }) {
+function HomePage({ mode, setMode, onTask, onAction, setPage }) {
   return <>
     <Hero mode={mode} onStart={() => setPage('study')} />
+    <MembershipStatus mode={mode} setMode={setMode} onAction={onAction}/>
     <JourneyStrip onJump={(c) => onAction(`${c.name}·${c.role}`)} />
     <TaskList mode={mode} onTask={onTask} />
     {mode !== 'visitor' && <WeeklyPulse mode={mode} />}
@@ -222,7 +236,7 @@ function HomePage({ mode, onTask, onAction, setPage }) {
 function WeeklyPulse({ mode }) {
   return <section className="section-block pulse-card">
     <div className="section-heading"><div><span className="section-kicker">WEEKLY</span><h2>本周学习脉搏</h2></div><span className="trend"><ChartNoAxesColumnIncreasing size={15} /> 掌握度 +12%</span></div>
-    <div className="week-days">{['一','二','三','四','五','六','日'].map((d,i)=><div key={d} className={i < (mode === 'vip' ? 4 : 3) ? 'done' : i === (mode === 'vip' ? 4 : 3) ? 'today' : ''}><span>{i < 4 ? <Check size={14}/> : i === 4 ? <Flame size={14}/> : ''}</span><small>{d}</small></div>)}</div>
+    <div className="week-days">{['一','二','三','四','五','六','日'].map((d,i)=><div key={d} className={i < (mode === 'apu' ? 4 : 3) ? 'done' : i === (mode === 'apu' ? 4 : 3) ? 'today' : ''}><span>{i < 4 ? <Check size={14}/> : i === 4 ? <Flame size={14}/> : ''}</span><small>{d}</small></div>)}</div>
     <div className="pulse-advice"><Avatar pos="left" size="xs" /><span><b>董高分建议</b>函数图像读得越来越准了，周末再巩固一次易错点。</span><ChevronRight size={18}/></div>
   </section>;
 }
@@ -277,12 +291,12 @@ function ExamPage({ mode, onAction }) {
 }
 
 function ProfilePage({ mode, setMode, onAction }) {
-  const info = mode==='visitor'?['游客同学','注册后同步学习记录','0']:mode==='camp'?['林小满','7天提分训练营 · 第3天','3']:['林小满','八年级 · 年课VIP','28'];
+  const info = mode==='visitor'?['游客同学','未注册·学习记录仅本机保留','0']:mode==='junior'?['林小满','初级会员·已领取体验课','3']:['林小满','阿朴会员·八年级正价课','28'];
   return <div className="inner-page profile-page">
     <section className={`profile-head ${mode}`}><div className="profile-person"><div className="person-photo"><Avatar pos="center" size="sm"/></div><div><h2>{info[0]}<span>{modes[mode].chip}</span></h2><p>{info[1]}</p></div><button onClick={()=>onAction('个人资料')}><ChevronRight/></button></div>
-      <div className="profile-stats"><div><b>{info[2]}</b><small>坚持天数</small></div><div><b>{mode==='visitor'?'--':'12.6'}<em>h</em></b><small>累计学习</small></div><div><b>{mode==='vip'?'82%':'--'}</b><small>同龄排名</small></div></div>
+      <div className="profile-stats"><div><b>{info[2]}</b><small>坚持天数</small></div><div><b>{mode==='visitor'?'--':'12.6'}<em>h</em></b><small>累计学习</small></div><div><b>{mode==='apu'?'82%':'--'}</b><small>同龄排名</small></div></div>
     </section>
-    {mode!=='vip'&&<section className="upgrade-card"><span className="vip-gem"><Sparkles/></span><div><small>周周阿朴年课</small><b>让每一天，都学得刚刚好</b><p>完整学情 · 智能规划 · 全年备考</p></div><button onClick={()=>setMode('vip')}>了解年课</button></section>}
+    {mode!=='apu'&&<section className="upgrade-card"><span className="vip-gem"><Sparkles/></span><div><small>{mode==='visitor'?'免费开启初级会员':'升级阿朴会员'}</small><b>{mode==='visitor'?'注册领课，保留学习记录':'让每一天，都学得刚刚好'}</b><p>{mode==='visitor'?'免费体验 · 学情小结':'完整学情 · 智能规划 · 全年备考'}</p></div><button onClick={()=>setMode(mode==='visitor'?'junior':'apu')}>{mode==='visitor'?'免费领课':'了解正价课'}</button></section>}
     <section className="section-block family-section"><div className="section-heading"><div><span className="section-kicker">FAMILY</span><h2>家长服务</h2></div></div>
       <div className="profile-menu">{[[UsersRound,'家长学习报告','每周掌握孩子学习情况'],[MessageCircleQuestion,'学习顾问','随时解答学习规划问题'],[CalendarDays,'学习计划','查看本周安排与完成情况']].map(([I,t,s])=><button key={t} onClick={()=>onAction(t)}><I/><span><b>{t}</b><small>{s}</small></span><ChevronRight/></button>)}</div>
     </section>
@@ -303,7 +317,7 @@ function ActionSheet({ data, close, mode, upgrade }) {
     <div className="action-sheet">
       <button className="sheet-close" onClick={close}><X size={19}/></button>
       {data.type === 'diagnosis' ? <DiagnosisContent close={close}/> : locked ? <>
-        <div className="sheet-symbol lock"><LockKeyhole/></div><span className="sheet-kicker">完整体验继续解锁</span><h2>先完成“学”，再进入“{data.title?.charAt(0)}”</h2><p>阿朴会根据你的学习结果动态调整后面的练习，完成第一步后即可解锁。</p><button className="sheet-primary" onClick={close}>去完成第一项 <ChevronRight size={17}/></button><button className="sheet-secondary" onClick={upgrade}>了解训练营</button>
+        <div className="sheet-symbol lock"><LockKeyhole/></div><span className="sheet-kicker">完整体验继续解锁</span><h2>先完成“学”，再进入“{data.title?.charAt(0)}”</h2><p>阿朴会根据你的学习结果动态调整后面的练习，注册领课后即可解锁完整流程。</p><button className="sheet-primary" onClick={close}>去完成第一项 <ChevronRight size={17}/></button><button className="sheet-secondary" onClick={upgrade}>注册免费领课</button>
       </> : <>
         <div className="sheet-symbol"><Sparkles/></div><span className="sheet-kicker">{mode==='visitor'?'功能预览':'为你准备好了'}</span><h2>{data.title}</h2><p>{data.subtitle || '基于你的最新学情生成个性化内容，学习记录会自动同步到成长报告。'}</p>
         <div className="sheet-feature"><Check/> 智能匹配当前学习进度</div><div className="sheet-feature"><Check/> 完成后即时反馈掌握情况</div>
@@ -320,7 +334,8 @@ function DiagnosisContent({ close }) {
 function Toast({ text }) { return text ? <div className="toast"><Check size={16}/>{text}</div> : null; }
 
 function App() {
-  const [mode, setMode] = useState('vip');
+  const previewMode = new URLSearchParams(window.location.search).get('mode');
+  const [mode, setMode] = useState(modes[previewMode] ? previewMode : 'apu');
   const [page, setPage] = useState('home');
   const [openMode, setOpenMode] = useState(false);
   const [sheet, setSheet] = useState(null);
@@ -332,7 +347,7 @@ function App() {
   const taskAction = (task, locked) => setSheet({title:task.title, locked, subtitle:task.sub});
   const notify = () => { setToast('暂无新消息，今日计划已更新'); setTimeout(()=>setToast(''),2400); };
   const content = useMemo(() => ({
-    home: <HomePage mode={mode} onTask={taskAction} onAction={openAction} setPage={setPage}/>,
+    home: <HomePage mode={mode} setMode={setMode} onTask={taskAction} onAction={openAction} setPage={setPage}/>,
     study: <StudyPage mode={mode} onTask={taskAction} onAction={openAction}/>,
     review: <ReviewPage mode={mode} onAction={openAction}/>,
     exam: <ExamPage mode={mode} onAction={openAction}/>,
@@ -342,7 +357,7 @@ function App() {
     <Header mode={mode} setMode={setMode} openMode={openMode} setOpenMode={setOpenMode} onBell={notify}/>
     <main>{content}</main>
     <BottomNav page={page} setPage={setPage}/>
-    <ActionSheet data={sheet} close={()=>setSheet(null)} mode={mode} upgrade={()=>{setMode('camp');setSheet(null);notify();}}/>
+    <ActionSheet data={sheet} close={()=>setSheet(null)} mode={mode} upgrade={()=>{setMode('junior');setSheet(null);notify();}}/>
     <Toast text={toast}/>
   </div>;
 }
