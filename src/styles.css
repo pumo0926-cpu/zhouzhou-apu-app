@@ -28,3 +28,18 @@ button:focus-visible{outline:3px solid rgba(22,139,128,.2);outline-offset:2px}
 @media(min-width:700px){body{padding:20px 0}.app-shell{min-height:calc(100vh - 40px);border-radius:28px}.bottom-nav{bottom:20px;border-radius:0 0 28px 28px}.topbar{border-radius:28px 28px 0 0}}
 @media(max-width:420px){.topbar{padding-left:14px;padding-right:14px}.hero{margin-left:10px;margin-right:10px;padding-left:18px}.hero h1{font-size:25px}.hero-copy{width:68%}.hero-art{right:-84px;width:292px}.hero-copy>p{font-size:11px}.journey-strip,.section-block,.parent-card,.exam-hero,.profile-head,.upgrade-card{margin-left:10px;margin-right:10px}.journey-strip{padding-left:9px;padding-right:9px}.journey-title b{font-size:10px}.journey-step .avatar-sm{width:50px;height:50px}.step-tag{right:10px;top:30px}.task-list{padding-left:11px;padding-right:11px}.page-title{padding-left:16px}.review-overview,.subject-tabs{padding-left:10px;padding-right:10px}.chapter-card{margin-left:10px;margin-right:10px}}
 @media(max-width:360px){.topbar{gap:6px}.brand{gap:6px}.brand-mark{width:35px;height:35px}.brand small{display:none}.icon-button{width:35px;height:35px;min-width:35px}.mode-chip{padding:0 8px;font-size:11px}.hero h1{font-size:22px}.hero-copy{width:72%}.hero-art{right:-104px}.art-bubble{display:none}.journey-title b{display:none}.zone-card{min-height:132px}.bottom-nav button>span{min-width:35px}}
+
+/* Three standalone Apu IP characters */
+.hero-art{right:-10px;width:280px;overflow:visible}
+.hero-art .hero-character{position:absolute;width:auto;height:auto;object-fit:contain;object-position:center;border-radius:0;filter:drop-shadow(0 9px 8px rgba(20,24,23,.18));z-index:1}
+.hero-art .hero-dong{width:112px;height:190px;left:0;bottom:40px;transform:rotate(-5deg)}
+.hero-art .hero-qin{width:135px;height:250px;left:73px;bottom:-12px;z-index:3}
+.hero-art .hero-ai{width:116px;height:195px;right:-8px;bottom:30px;transform:rotate(5deg)}
+.hero-art:after{z-index:2;pointer-events:none}
+.bubble-a{right:24px;top:30px}.bubble-b{right:78px;bottom:11px}
+.avatar{background-size:88% 88%;background-position:center;background-color:#edf5f2}
+.avatar-left{background-position:center;background-color:#fff5cf}
+.avatar-center{background-position:center;background-color:#ffe9f2}
+.avatar-right{background-position:center;background-color:#e5f5fa}
+@media(max-width:420px){.hero-art{right:-32px;width:270px}}
+@media(max-width:360px){.hero-art{right:-50px;transform:scale(.92);transform-origin:right bottom}}

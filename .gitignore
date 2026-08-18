@@ -5,3 +5,4 @@ dist/
 .env.*
 *.local
 npm-debug.log*
+/截图-2026-08-18101452.png

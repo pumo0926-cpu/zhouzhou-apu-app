@@ -10,7 +10,11 @@ import {
 } from 'lucide-react';
 import './styles.css';
 
-const mascotsUrl = `${import.meta.env.BASE_URL}assets/apu-mascots.webp`;
+const mascotAssets = {
+  left: `${import.meta.env.BASE_URL}assets/dong-gaofen.webp`,
+  center: `${import.meta.env.BASE_URL}assets/qin-lianxi.webp`,
+  right: `${import.meta.env.BASE_URL}assets/ai-gaicuo.webp`
+};
 
 const modes = {
   visitor: { label: '游客体验', short: '游客', chip: '免费体验', color: '#168b80' },
@@ -57,7 +61,7 @@ const navItems = [
 ];
 
 function Avatar({ pos = 'left', size = 'md' }) {
-  return <div className={`avatar avatar-${pos} avatar-${size}`} style={{ backgroundImage: `url(${mascotsUrl})` }} role="img" aria-label="周周阿朴IP角色" />;
+  return <div className={`avatar avatar-${pos} avatar-${size}`} style={{ backgroundImage: `url(${mascotAssets[pos]})` }} role="img" aria-label="周周阿朴IP角色" />;
 }
 
 function Header({ mode, setMode, openMode, setOpenMode, onBell }) {
@@ -103,7 +107,9 @@ function Hero({ mode, onStart }) {
         <small className="hero-meta">{copy.meta}</small>
       </div>
       <div className="hero-art">
-        <img src={mascotsUrl} alt="董高分、秦练习和艾改错" />
+        <img className="hero-character hero-dong" src={mascotAssets.left} alt="董高分" />
+        <img className="hero-character hero-qin" src={mascotAssets.center} alt="秦练习" />
+        <img className="hero-character hero-ai" src={mascotAssets.right} alt="艾改错" />
         <span className="art-bubble bubble-a">学会方法</span>
         <span className="art-bubble bubble-b">解决问题</span>
       </div>
