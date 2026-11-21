@@ -365,6 +365,7 @@ function HomePage({ mode, setMode, onTask, onAction, setPage }) {
     <LifecyclePath mode={mode}/>
     <StageAccessCard mode={mode}/>
     {mode === 'apu' && <ApuMemberWorld onAction={onAction}/>}
+    {(mode === 'claimed' || mode === 'apu') && <section className="section-block" style={{background:'#e9f7ef',borderRadius:20,padding:18,margin:'16px 0'}}><div style={{fontSize:12,color:'#168b76',fontWeight:700}}>本周六 · 共学俱乐部</div><h2 style={{margin:'8px 0'}}>和同学一起 UP！</h2><p style={{fontSize:13,color:'#57776a'}}>选一个固定的学习时间，和同学一起完成35分钟语文共学。可点赞、邀约提醒。</p><button className="primary-button" onClick={()=>window.location.assign(`${import.meta.env.BASE_URL}colearn-demo.html`)}>加入本周共学 <ChevronRight size={17}/></button></section>}
     <JourneyStrip onJump={(c) => onAction(`${c.name}·${c.role}`)} />
     {mode !== 'apu' && <TaskList mode={mode} onTask={onTask} />}
     {(mode === 'claimed' || mode === 'apu') && <WeeklyPulse mode={mode} />}
